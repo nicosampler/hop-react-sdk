@@ -1,30 +1,59 @@
 # hop-react-sdk
-
-> Allows to brige tokens using HOP Platform from behind
-
-[![NPM](https://img.shields.io/npm/v/hop-react-sdk.svg)](https://www.npmjs.com/package/hop-react-sdk) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-## Install
-
-```bash
-npm install --save hop-react-sdk
-```
+Allows to bridge tokens using thought HOP Platform
 
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+// First, import the HOP SDK and some helpers
+import {
+  useHopBridge, // a hook to use the HOP bridge
+  UseHopBridgeFunctionResponse, // Type of the hook response
+  bridgeChainNames, // a list of available bridge chains
+  bridgeSymbols, // a list of available bridge symbols
+  bridgeChainNameId,
+} from 'hop-react-sdk'
+// Call useHopBridge to receive a function that will be called to initiate a Swap.
+const initiateHopTransaction = useHopBridge({
+  provider: provider as JsonRpcProvider,
+})
 
-import MyComponent from 'hop-react-sdk'
-import 'hop-react-sdk/dist/index.css'
+const res: UseHopBridgeFunctionResponse = await initiateHopTransaction({
+  token, // the token to swap from. (bridgeSymbols)
+  fromChainName, // the chain name of the token to swap from. (bridgeChainNames)
+  toChainName, // the chain name of the token to swap to. (bridgeChainNames)
+  tokenAmount, // amount of tokens to send. (BigNumberish)
+  toAddress, // the address to send the token to.
+  slippageTolerance: 0.5,
+})
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+// res, will receive an object with the following properties:
+tokenDecimals: number;
+estimation: CalculateSendResponse; // stats about the Swap
+isApprovalNeeded: boolean; // if the user needs to approve the Swap
+sendApproval: () => Promise<TransactionResponse>; // a function to approve the Swap
+sendSwap: () => Promise<{
+  tx?: TransactionResponse;
+  hopExplorerLink?: string;
+  error?: any;
+  formattedMessage?: string;
+}>;
+
 ```
 
-## License
+## Example app
 
-MIT © [nicosampler](https://github.com/nicosampler)
+We have developed an example app that allows using the HOP bridge.
+You can find it in the `example` folder. To run the example app follow the steps below:
+
+```bash
+yarn install
+yarn dev:example
+```
+
+## Building the SDK
+
+```bash
+yarn install
+yarn build
+```
+
