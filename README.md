@@ -21,7 +21,7 @@ const res: UseHopBridgeFunctionResponse = await initiateHopTransaction({
   token, // the token to swap from. (bridgeSymbols)
   fromChainName, // the chain name of the token to swap from. (bridgeChainNames)
   toChainName, // the chain name of the token to swap to. (bridgeChainNames)
-  tokenAmount, // amount of tokens to send. (BigNumberish)
+  tokenAmount, // amount of tokens to send. (BigNumber)
   toAddress, // the address to send the token to.
   slippageTolerance: 0.5,
 })

@@ -9,11 +9,13 @@ import {
   BridgeSymbol,
   BridgeChainName,
   bridgeChainNameId,
+  bridgeTokens,
 } from 'hop-react-sdk'
 import { JsonRpcProvider } from 'ethers/node_modules/@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import AccountHandler from '../src/pageHelpers/AccountHandler '
 import Estimation from '../src/pageHelpers/Estimation'
+import { BigNumberInput } from 'big-number-input'
 
 function App() {
   const [approvalNeeded, setApprovalNeeded] = useState(false)
@@ -98,6 +100,7 @@ function App() {
       const tx = await hopResponse.sendApproval()
       await tx.wait()
       setApprovalNeeded(false)
+      setLoading(false)
     } catch (error) {
       setLoading(false)
       console.error(error)
@@ -157,12 +160,10 @@ function App() {
               ))}
             </select>
 
-            <input
-              type="number"
-              min={1}
-              max={5}
-              onChange={(event) => setAmount(event.target.value)}
+            <BigNumberInput
+              decimals={bridgeTokens[selectedToken].decimals}
               value={amount}
+              onChange={setAmount}
             />
           </div>
 
