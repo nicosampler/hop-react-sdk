@@ -167,16 +167,22 @@ function App() {
             />
           </div>
 
-          {ethersChainId === bridgeChainNameId[selectedChainFrom] ? (
-            <button
-              onClick={() => initiateSwap()}
-              disabled={!account || loading || !amount || BigNumber.from(amount).eq(0)}
-            >
-              Get swap estimation
-            </button>
-          ) : (
-            <div>Chain chain to {selectedChainFrom}</div>
+          {ethersChainId !== bridgeChainNameId[selectedChainFrom] && (
+            <div>Change connected wallet to {selectedChainFrom} chain.</div>
           )}
+
+          <button
+            onClick={() => initiateSwap()}
+            disabled={
+              !account ||
+              loading ||
+              !amount ||
+              BigNumber.from(amount).eq(0) ||
+              ethersChainId !== bridgeChainNameId[selectedChainFrom]
+            }
+          >
+            Get swap estimation
+          </button>
 
           {loading && <div>Loading...</div>}
 
