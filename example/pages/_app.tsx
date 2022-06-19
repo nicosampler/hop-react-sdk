@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import { Mainnet, Polygon, Gnosis, Optimism, Arbitrum, DAppProvider, Config } from '@usedapp/core'
+import 'chota/dist/chota.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const config: Config = {

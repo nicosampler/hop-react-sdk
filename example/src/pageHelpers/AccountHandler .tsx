@@ -1,25 +1,34 @@
-import { useEthers, useNetwork } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
-function AccountHandler() {
+function AccountHandler({ chainBalance }: { chainBalance: string }) {
   const { activateBrowserWallet, account, deactivate, chainId: ethersChainId } = useEthers()
-  const {
-    network: { chainId: networkChainId },
-  } = useNetwork()
 
   return (
     <div>
-      <div>
-        account:{' '}
-        {account ? (
-          <div>
-            {account} - <button onClick={deactivate}>Disconnect</button>
+      {account ? (
+        <div className="card">
+          <div className="is-full-width is-right">
+            <button className="button outline" onClick={deactivate}>
+              Disconnect
+            </button>
           </div>
-        ) : (
-          <button onClick={activateBrowserWallet}>Connect</button>
-        )}
-      </div>
-      <div>ethersChainId: {ethersChainId}</div>
-      <div>networkChainId: {networkChainId}</div>
+          <div>
+            {`Address: ${account.substring(0, 6)}...${account.substring(
+              account.length - 4,
+              account.length,
+            )}`}{' '}
+          </div>
+
+          <div>ChainId: {ethersChainId}</div>
+          <div>ChainBalance: {chainBalance}</div>
+        </div>
+      ) : (
+        <div className="is-center">
+          <button className="button primary" onClick={activateBrowserWallet}>
+            Connect
+          </button>
+        </div>
+      )}
     </div>
   )
 }

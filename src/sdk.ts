@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { AddressZero } from '@ethersproject/constants'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getAddress } from '@ethersproject/address'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { JsonRpcProvider, TransactionResponse, JsonRpcSigner } from '@ethersproject/providers'
 import { Token as SdkHopToken, Hop, ChainId as AllChainId } from '@hop-protocol/sdk'
 import { mainnet as mainnetAddresses } from '@hop-protocol/core/addresses'
 
@@ -17,7 +17,7 @@ const hopExplorerUrl = 'https://explorer.hop.exchange/?transferId='
 
 export type ChainId = `${AllChainId}`
 
-type Props = {
+type useHopBridgeProps = {
   provider: JsonRpcProvider
 }
 
@@ -31,7 +31,7 @@ type BridgeSendParams = {
 }
 
 export type UseHopBridgeFunctionResponse = {
-  tokenDecimals: number,
+  tokenDecimals: number
   estimation: CalculateSendResponse
   isApprovalNeeded: boolean
   sendApproval: () => Promise<TransactionResponse>
@@ -43,7 +43,32 @@ export type UseHopBridgeFunctionResponse = {
   }>
 }
 
-export function useHopBridge({ provider }: Props) {
+export function getHopToken(
+  signer: JsonRpcSigner,
+  tokenName: BridgeSymbol,
+  chainName: BridgeChainName,
+): SdkHopToken {
+  const token = bridgeTokens[tokenName]
+
+  const tokenBridge = mainnetAddresses.bridges[tokenName][chainName] as {
+    l1CanonicalToken?: string
+    l2CanonicalToken?: string
+  }
+  const tokenAddress = (tokenBridge.l1CanonicalToken ?? tokenBridge.l2CanonicalToken) as string
+
+  return new SdkHopToken(
+    'mainnet',
+    chainName,
+    tokenAddress,
+    token.decimals,
+    token.symbol,
+    token.symbol,
+    '',
+    signer,
+  )
+}
+
+export function useHopBridge({ provider }: useHopBridgeProps) {
   return useCallback(
     async ({
       token: tokenName,
@@ -54,7 +79,6 @@ export function useHopBridge({ provider }: Props) {
       slippageTolerance,
     }: BridgeSendParams): Promise<UseHopBridgeFunctionResponse> => {
       const signer = provider.getSigner()
-      // const address = await signer.getAddress()
       const chainFrom = bridgeChains[fromChainName]
       const chainTo = bridgeChains[toChainName]
       const token = bridgeTokens[tokenName]
@@ -110,23 +134,7 @@ export function useHopBridge({ provider }: Props) {
       }
 
       const isApprovalNeeded = async () => {
-        const tokenBridge = mainnetAddresses.bridges[tokenName][fromChainName] as {
-          l1CanonicalToken?: string
-          l2CanonicalToken?: string
-        }
-        const tokenAddress = (tokenBridge.l1CanonicalToken ??
-          tokenBridge.l2CanonicalToken) as string
-
-        const hopSdkToken = new SdkHopToken(
-          'mainnet',
-          fromChainName,
-          tokenAddress,
-          token.decimals,
-          token.symbol,
-          token.symbol,
-          '',
-          signer,
-        )
+        const hopSdkToken = getHopToken(signer, tokenName, fromChainName)
 
         if (hopSdkToken.isNativeToken) {
           return false
