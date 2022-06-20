@@ -130,7 +130,7 @@ function App() {
       setLoading(true)
       const tx = await hopResponse.sendApproval()
       await tx.wait()
-      setIsApprovalNeeded(true)
+      setIsApprovalNeeded(false)
       setLoading(false)
     } catch (error) {
       setLoading(false)
