@@ -1,6 +1,10 @@
 # hop-react-sdk
 Allows to bridge tokens through Hop Platform
 
+## Install
+```bash 
+yarn add hop-react-sdk
+```
 ## Usage
 
 ```tsx
