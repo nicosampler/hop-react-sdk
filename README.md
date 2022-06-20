@@ -5,6 +5,12 @@ Allows to bridge tokens through Hop Platform
 ```bash 
 yarn add hop-react-sdk
 ```
+
+## Usage
+To use the example app using the SDK source code and not the compiled version of NPM package, you need to:
+* On `example/package.json` replace `hop-react-sdk: "version"` with `"hop-react-sdk": "link:..",`.
+* run `configure-example`
+
 ## Usage
 
 ```tsx

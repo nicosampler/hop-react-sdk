@@ -1,6 +1,6 @@
 {
   "name": "hop-react-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Allows to bridge tokens using Hop Platform",
   "author": "nicosampler",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "setup:2": "cd example/node_modules/react && yarn link && cd ../react-dom && yarn link",
     "setup:3": "yarn link && yarn link react && yarn link react-dom",
     "setup:4": "cd example && yarn link hop-react-sdk",
-    "postinstall": "yarn setup:1 && yarn setup:2 && yarn setup:3 && yarn setup:4 && yarn build",
+    "configure-example": "yarn setup:1 && yarn setup:2 && yarn setup:3 && yarn setup:4 && yarn build",
     "dev:example": "cd example && yarn dev",
     "build": "tsc"
   },
